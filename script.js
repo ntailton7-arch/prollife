@@ -1,0 +1,14 @@
+const $=s=>document.querySelector(s),hdr=$('#hdr'),bg=$('.hero-bg');
+const nav=$('#nav'),bur=$('#burger');
+bur.onclick=()=>{const o=nav.classList.toggle('open');bur.setAttribute('aria-expanded',o)};
+nav.onclick=e=>{if(e.target.tagName==='A'){nav.classList.remove('open');bur.setAttribute('aria-expanded',false)}};
+let tick=false;addEventListener('scroll',()=>{if(tick)return;tick=true;requestAnimationFrame(()=>{const y=scrollY;hdr.classList.toggle('on',y>40);if(y<innerHeight)bg.style.transform=`translateY(${y*.15}px)`;tick=false})},{passive:true});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.15});
+document.querySelectorAll('.rv').forEach((el,i)=>{el.style.transitionDelay=(i%4)*80+'ms';io.observe(el)});
+const co=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;co.unobserve(e.target);const el=e.target,t=+el.dataset.count,d=+el.dataset.dec||0,p=el.dataset.pre||'',s=el.dataset.suf||'',st=performance.now();
+(function f(n){const k=Math.min((n-st)/1400,1),v=t*(1-Math.pow(1-k,3));el.textContent=p+v.toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d})+s;if(k<1)requestAnimationFrame(f)})(st)}),{threshold:.6});
+document.querySelectorAll('[data-count]').forEach(el=>co.observe(el));
+document.querySelectorAll('[data-plan]').forEach(a=>a.onclick=()=>{$('select[name=interesse]').value='Plano '+a.dataset.plan});
+$('#form').onsubmit=e=>{e.preventDefault();const f=new FormData(e.target);
+const m=`Olá! Sou ${f.get('nome')} (${f.get('tel')}). Tenho interesse em: ${f.get('interesse')}.`;
+open('https://wa.me/5583999920697?text='+encodeURIComponent(m),'_blank','noopener')};
